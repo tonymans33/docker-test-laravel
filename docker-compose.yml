@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: 159914497254528/test-docker
+    image: 159914497254528/test-docker:latest
     container_name: test-docker
     restart: unless-stopped
     environment:
