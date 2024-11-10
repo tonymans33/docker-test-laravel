@@ -44,7 +44,7 @@ jobs:
         env:
           DOCKER_IMAGE: 159914497254528/test-docker:latest
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@your-ec2-public-ip << EOF
+          ssh -o StrictHostKeyChecking=no ubuntu@13.61.7.249 << EOF
             cd /home/ubuntu/test-docker
             sudo docker-compose pull  # Pull the latest images
             sudo docker-compose down   # Stop and remove current containers
