@@ -44,9 +44,7 @@ jobs:
         env:
           DOCKER_IMAGE: 159914497254528/test-docker:latest
         run: |
-          ssh -o StrictHostKeyChecking=no -t ubuntu@13.61.7.249 << EOF
-            cd /home/ubuntu/test-docker
-            sudo docker-compose pull  # Pull the latest images
-            sudo docker-compose down   # Stop and remove current containers
-            sudo docker-compose up -d  # Recreate and start containers in detached mode
-          EOF
+          ssh -o StrictHostKeyChecking=no -tt ubuntu@13.61.7.249 "cd /home/ubuntu/test-docker && sudo docker-compose pull"
+          ssh -o StrictHostKeyChecking=no -tt ubuntu@13.61.7.249 "cd /home/ubuntu/test-docker && sudo docker-compose down"
+          ssh -o StrictHostKeyChecking=no -tt ubuntu@13.61.7.249 "cd /home/ubuntu/test-docker && sudo docker-compose up -d"
+
