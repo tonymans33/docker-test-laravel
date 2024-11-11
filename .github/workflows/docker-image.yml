@@ -45,6 +45,6 @@ jobs:
             cd /home/ubuntu/docker-test-laravel
             git pull origin master
             sudo docker-compose pull
-            sudo docker-compose up -d --force-recreate --no-deps &
-            sudo docker image prune -f
+            sudo docker-compose up -d --force-recreate --no-deps 
+            sudo docker image prune -a -f
           EOF
