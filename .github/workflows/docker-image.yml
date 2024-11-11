@@ -42,7 +42,7 @@ jobs:
         env:
           DOCKER_IMAGE: 159914497254528/test-docker:latest
         run: |
-          ssh -o StrictHostKeyChecking=no -tt ubuntu@7.249 << 'EOF'
+          ssh -o StrictHostKeyChecking=no -tt ubuntu@13.61.7.249 << 'EOF'
             cd /home/ubuntu/docker-test-laravel
             sudo docker-compose pull
             sudo docker-compose down
