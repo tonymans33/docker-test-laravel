@@ -18,6 +18,10 @@ php artisan vendor:publish --tag=laravel-assets --ansi --force
 # Install Composer dependencies
 composer install --no-dev --optimize-autoloader
 
+# Install Node dependencies and build assets
+npm install
+npm run build
+
 # Set permissions for bootstrap and storage
 chmod -R 777 /var/www/bootstrap/cache /var/www/storage
 
