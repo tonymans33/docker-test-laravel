@@ -3,7 +3,7 @@ name: Build, Push, and Deploy Docker Image
 on:
   push:
     branches:
-      - master  
+      - master
 
 jobs:
   build-push-deploy:
@@ -29,22 +29,22 @@ jobs:
       - name: Push Docker Image
         run: |
           docker push 159914497254528/test-docker:latest
-
   deploy:
     runs-on: ubuntu-latest
     needs: build-push-deploy
-
     steps:
       - name: Install SSH Key
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
-      
+
       - name: Deploy to EC2
         env:
           DOCKER_IMAGE: 159914497254528/test-docker:latest
         run: |
-          ssh -o StrictHostKeyChecking=no -tt ubuntu@13.61.7.249 "cd /home/ubuntu/test-docker && sudo docker-compose pull"
-          ssh -o StrictHostKeyChecking=no -tt ubuntu@13.61.7.249 "cd /home/ubuntu/test-docker && sudo docker-compose down"
-          ssh -o StrictHostKeyChecking=no -tt ubuntu@13.61.7.249 "cd /home/ubuntu/test-docker && sudo docker-compose up -d"
-
+          ssh -o StrictHostKeyChecking=no -tt ubuntu@7.249 << 'EOF'
+            cd /home/ubuntu/docker-test-laravel
+            sudo docker-compose pull
+            sudo docker-compose down
+            sudo docker-compose up -d
+          EOF
