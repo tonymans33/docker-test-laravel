@@ -22,6 +22,9 @@ composer install --no-dev --optimize-autoloader
 npm install
 npm run build
 
+# Run the development server (optional)
+npm run dev &
+
 # Set permissions for bootstrap and storage
 chmod -R 777 /var/www/bootstrap/cache /var/www/storage
 
