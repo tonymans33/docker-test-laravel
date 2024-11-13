@@ -15,15 +15,8 @@ php artisan config:clear
 php artisan package:discover --ansi
 php artisan vendor:publish --tag=laravel-assets --ansi --force
 
-# Install Composer dependencies
+# Install Composer dependencies (already done in Dockerfile but keeping it here as a safeguard)
 composer install --no-dev --optimize-autoloader
-
-# Install Node dependencies and build assets
-npm install
-npm run build
-
-# Run the development server (optional)
-npm run dev &
 
 # Set permissions for bootstrap and storage
 chmod -R 777 /var/www/bootstrap/cache /var/www/storage
@@ -40,5 +33,5 @@ php artisan view:cache
 # Create storage link (optional)
 php artisan storage:link
 
-# Start Supervisor to manage PHP-FPM and other services if needed
+# Start PHP-FPM as the final process in the container
 exec php-fpm
