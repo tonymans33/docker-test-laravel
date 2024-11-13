@@ -3,6 +3,8 @@
 # Navigate to the project directory
 cd /var/www
 
+rm -f public/hot
+
 # Wait for MySQL to be ready
 until mysqladmin ping -h"$DB_HOST" --silent; do
     echo "Waiting for MySQL..."
