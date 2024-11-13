@@ -1,27 +1,10 @@
-# Stage 1: Build assets with Node.js
-FROM node:22 as node-builder
-
-# Set working directory
-WORKDIR /app
-
-# Copy package.json and package-lock.json for dependency installation
-COPY package*.json ./
-
-# Install npm dependencies
-RUN npm install
-
-# Copy the rest of the application code and build assets
-COPY . .
-RUN npm run build
-
-
-# Stage 2: Build PHP environment with Composer
+# Use an official PHP runtime as a parent image
 FROM php:8.2-fpm
 
 # Set working directory
 WORKDIR /var/www
 
-# Install PHP dependencies and Node.js 22.x (if needed for any other reason)
+# Install dependencies and Node.js 22.x
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -32,9 +15,11 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     zip \
     unzip \
-    default-mysql-client
+    default-mysql-client \
+    && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+    && apt-get install -y nodejs
 
-# Clear APT cache to reduce image size
+# Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
@@ -43,15 +28,11 @@ RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 # Install Composer
 COPY --from=composer:2.2 /usr/bin/composer /usr/bin/composer
 
-# Copy the Composer files and install dependencies
-COPY composer.json composer.lock ./
+# Copy the entire application code (including the artisan file) first
+COPY . /var/www
+
+# Now run Composer install
 RUN composer install --no-dev --optimize-autoloader
-
-# Copy the application code
-COPY . .
-
-# Copy built assets from Node stage
-COPY --from=node-builder /app/public /var/www/public
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www && chmod -R 755 /var/www
@@ -63,7 +44,7 @@ RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 COPY run.sh /var/www/run.sh
 RUN chmod +x /var/www/run.sh
 
-# Expose port 9000 for PHP-FPM
+# Expose port 9000
 EXPOSE 9000
 
 # Run the custom entrypoint script
