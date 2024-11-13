@@ -33,6 +33,9 @@ COPY . /var/www
 
 # Now run Composer install
 RUN composer install --no-dev --optimize-autoloader
+    && npm ci \
+    && npm run build \
+    && rm -rf node_modules
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www && chmod -R 755 /var/www
