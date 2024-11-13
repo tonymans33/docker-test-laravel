@@ -32,7 +32,7 @@ COPY --from=composer:2.2 /usr/bin/composer /usr/bin/composer
 COPY . /var/www
 
 # Now run Composer install
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --no-dev --optimize-autoloader \
     && npm ci \
     && npm run build \
     && rm -rf node_modules
