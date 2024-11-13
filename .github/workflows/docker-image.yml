@@ -9,26 +9,23 @@ jobs:
   build-push-deploy:
     runs-on: ubuntu-latest
     steps:
-      # Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Log in to Docker Hub
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Build the Docker image
       - name: Build Docker Image
         run: |
           docker build -t 159914497254528/test-docker:latest .
 
-      # Push the Docker image to Docker Hub
       - name: Push Docker Image
         run: |
           docker push 159914497254528/test-docker:latest
+
   deploy:
     runs-on: ubuntu-latest
     needs: build-push-deploy
@@ -37,14 +34,16 @@ jobs:
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+
       - name: Deploy to EC2
         env:
           DOCKER_IMAGE: 159914497254528/test-docker:latest
         run: |
-          ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=10 -o StrictHostKeyChecking=no -T ubuntu@16.170.239.67 << 'EOF'
-            cd /home/ubuntu/docker-test-laravel
-            git pull origin master
+          ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=10 -o StrictHostKeyChecking=no -T ubuntu@13.53.129.163 << 'EOF'
+            cd /home/ubuntu/docker-test-laravel 
+            git pull origin master || true
+            sudo docker-compose down || true
             sudo docker-compose pull
-            sudo docker-compose up -d --force-recreate --no-deps 
-            sudo docker image prune -a -f
+            sudo docker-compose up -d
+            sudo docker system prune -f --volumes || true
           EOF
